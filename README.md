@@ -1,3 +1,28 @@
+# Laravel CRUD for ODC
+
+[![Authorization CI](https://github.com/henokwon/laravel-crud-for-odc/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/henokwon/laravel-crud-for-odc/actions/workflows/ci.yml)
+
+## Authorization continuous integration
+
+Pull requests and pushes to `master` run administrative authorization feature
+tests against SQLite in memory.
+
+CI uses PHP 8.1 to match the existing Composer lockfile, with Composer 2.11.3.
+This compatibility check is not a recommendation to deploy an old PHP runtime;
+runtime and framework upgrades remain separate work.
+
+```bash
+composer install --no-interaction --prefer-dist --no-progress --no-scripts --no-plugins
+php artisan package:discover --ansi
+php vendor/bin/phpunit --filter AdministrativeAuthorizationTest
+```
+
+The selected tests configure an in-memory database, test-only app key and
+isolated sessions/cache. They cover administrative access, password ownership
+and current-password checks, and CSRF enforcement. This workflow does not run
+the complete legacy suite, frontend build or live service checks.
+For operator configuration, see [SECURITY.md](SECURITY.md).
+
 ## Features
 - Laravue stack CRUD project 
 - Back-end

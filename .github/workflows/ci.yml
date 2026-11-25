@@ -1,0 +1,45 @@
+name: Authorization CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  administrative-authorization:
+    name: Administrative authorization on SQLite
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      APP_ENV: testing
+      DB_CONNECTION: sqlite
+      DB_DATABASE: ':memory:'
+      CACHE_DRIVER: array
+      SESSION_DRIVER: array
+      MAIL_MAILER: array
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up PHP for the existing lockfile
+        uses: shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962 # 2.40.0
+        with:
+          php-version: '8.1'
+          extensions: mbstring, pdo_sqlite, sqlite3, fileinfo, curl, dom, xml
+          coverage: none
+          tools: composer:2.11.3
+      - name: Install locked dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress --no-scripts --no-plugins
+      - name: Discover Laravel packages
+        run: php artisan package:discover --ansi
+      - name: Run administrative authorization regressions
+        run: php vendor/bin/phpunit --filter AdministrativeAuthorizationTest
