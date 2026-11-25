@@ -114,6 +114,16 @@
                         <form method="POST" action="{{ route('users.change.password', $user->id) }}">
                             @csrf
                             <div class="form-group row">
+                                <label for="current_password" class="col-md-4 col-form-label text-md-right">{{ __('Your Current Password') }}</label>
+                                <div class="col-md-6">
+                                    <input id="current_password" type="password" name="current_password" required autocomplete="current-password"
+                                        class="form-control @error('current_password') is-invalid @enderror">
+                                    @error('current_password')
+                                        <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
                                 <label for="password"
                                     class="col-md-4 col-form-label text-md-right">{{ __('Password') }}</label>
 

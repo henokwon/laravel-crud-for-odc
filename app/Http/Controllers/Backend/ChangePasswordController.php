@@ -11,14 +11,20 @@ class ChangePasswordController extends Controller
 {
     public function change_password(Request $request, User $user)
     {
+        abort_unless($request->user()->is($user) || $request->user()->can('manage-records'), 403);
         $request->validate([
-          'password' => ['required', 'string', 'confirmed'],
+          'current_password' => ['bail', 'required', 'string', function ($attribute, $value, $fail) use ($request) {
+              if (!Hash::check($value, $request->user()->password)) {
+                  $fail('Your current password is incorrect.');
+              }
+          }],
+          'password' => ['required', 'string', 'min:8', 'confirmed'],
       ]);
 
         $user->update([
           'password' => Hash::make($request->password)
       ]);
 
-        return redirect()->route('users.index')->with('message', 'User Password Updated Succesfully');
+        return back()->with('message', 'User password updated successfully.');
     }
 }
