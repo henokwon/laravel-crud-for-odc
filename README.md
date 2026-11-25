@@ -5,8 +5,7 @@
 ## Authorization continuous integration
 
 Pull requests and pushes to `master` run administrative authorization feature
-tests against SQLite in memory. The badge reports the default branch workflow
-status and becomes available after the workflow runs there.
+tests against SQLite in memory.
 
 CI uses PHP 8.1 to match the existing Composer lockfile, with Composer 2.11.3.
 This compatibility check is not a recommendation to deploy an old PHP runtime;
